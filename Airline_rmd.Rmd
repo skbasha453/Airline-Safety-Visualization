@@ -1,0 +1,78 @@
+---
+title: "Airlines Safety Visualizaton"
+author: "Shaik"
+date: "2022-09-21"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Reading Data 
+
+```{r}
+#read data using read.csv
+airline_data <- read.csv(("https://raw.githubusercontent.com/fivethirtyeight/data/master/airline-safety/airline-safety.csv"))
+#clean data (rename columns)
+head(airline_data)
+```
+
+# Data Structure Checking and Data Cleaning
+
+```{r}
+#Checking Structures
+str(airline_data)
+
+#Loading tidyverse package 
+library(tidyverse)
+
+#Renaming Variables
+airline_data <- airline_data %>%
+  rename("incidents(1985-1999)"= "incidents_85_99",
+         "fatal_accidents(1985-1999)" = "fatal_accidents_85_99",
+         "fatalities(1985-1999)" = "fatalities_85_99",
+         "incidents(2000-2014)" = "incidents_00_14",
+         "fatal_accidents(2000-2014)" = "fatal_accidents_00_14",
+         "fatalities(2000-2014)" = "fatalities_00_14")
+
+#Variable Selection
+Summary_data <- subset(airline_data, SELECT = -C(incidents(2000-2014), fatal_accidents(2000-2014),fatalities(2000-2014)))  
+Summary_data
+
+```
+
+# Data Summary
+
+```{r}
+summary(Summary_data)
+```
+
+# Data Visualization 1: Boxplot
+
+The first visualization is a boxplot for the fatalities from 2000 to 2014 plotted below. The boxplot indicates that there are outliers in the number of fatalities with the distribution in the fatalities being skewed to the right. 
+
+```{r}
+ggplot(Summary_data) +
+  aes(x = "", y = `fatalities(2000-2014)`) +
+  geom_boxplot(fill = "#FF8C00") +
+  labs(title = "Fatalities (2000-2014) Boxplot") +
+  coord_flip() +
+  theme_minimal()
+```
+
+# Data Visualization 1: Scatterplot
+
+The second visualization is a scatterplot for the incidents and fatalities from 2000 to 2014 plotted below. The scatterplot indicates that as the number of incidents increase the number fatalities also increase. 
+
+```{r}
+ggplot(Summary_data) +
+  aes(x = `incidents(2000-2014)`, y = `fatalities(2000-2014)`) +
+  geom_point(shape = "circle", size = 1.5, colour = "#112446") +
+  labs(
+    title = "Incidents and Fatalities 2000-2014 Scatterplot"
+  ) +
+  theme_minimal()
+```
+
+
